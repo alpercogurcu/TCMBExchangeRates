@@ -195,3 +195,33 @@ Yada
 //CurrenciesExchange.CalculateHistoricalExchange(double Miktar, CurrencyCode Şuanki Kur, CurrencyCode Dönüştürülecek Kur,.ExchangeType.BanknoteBuying,ExchangeType Dönüşüm Tipi, int Yıl, int Ay, int Gün);
 double cur = CurrenciesExchange.CalculateHistoricalExchange(2000 ,CurrencyCode.TRY, CurrencyCode.USD, .ExchangeType.BanknoteBuying, 2018,5,20);
 ```  
+
+
+
+
+#### Günün kuru yoksa; kuru olan en yakın geçmiş günün kurunu almak.
+
+Genel bir Datatable değişkeni tanımlayın. Bunu ilgili formun load'ında veya kullanacağınız alanda new DataTable() ile oluşturun. 
+
+Aşağıdaki methodu kopyalayın. 
+
+```  
+Datatable dt;
+ private void KurCekimi(DateTime tarih)
+        {
+            DateTime date = tarih;
+            try
+            {
+                dt = CurrenciesExchange.GetDataTableAllCurrenciesHistoricalExchangeRates(date);
+            }
+            catch (Exception e)
+            {
+                if (e.Message == "The date specified may be a weekend or a public holiday!")
+                {
+                    MessageBox.Show(date.ToLongDateString() + " tarihinde kur bilgisi bulunamadı. Önceki güne bakılıyor.");
+                    KurCekimi(tarih.AddDays(-1));
+                }
+            }
+        }
+        ```  
+
